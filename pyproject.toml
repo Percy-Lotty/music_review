@@ -1,0 +1,3 @@
+# d:\CodexWorkspace\projects\music_review\pyproject.toml
+[tool.ruff]
+exclude = ["**/migrations"]
