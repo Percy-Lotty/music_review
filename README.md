@@ -62,6 +62,9 @@ music_review/
 ├── manage.py
 ├── requirements.txt
 ├── pyproject.toml              # ruff 配置
+├── docs/                       # 学习文档归档
+│   ├── Django教程Part1-7复习文档.html
+│   └── notes.html              # 学习笔记
 ├── music_review/               # 项目配置
 │   ├── settings.py
 │   ├── urls.py                 # 根路由，include 到 reviews
