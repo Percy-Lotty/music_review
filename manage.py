@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-"""Django's command-line utility for administrative tasks."""
+"""Django 项目的命令行工具（runserver / migrate 等命令的入口）。"""
 
 import os
 import sys
 
 
 def main():
-    """Run administrative tasks."""
+    """执行管理命令。"""
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "music_review.settings")
     try:
         from django.core.management import execute_from_command_line

@@ -1,10 +1,11 @@
 """
-WSGI config for music_review project.
+music_review 项目的 WSGI 配置。
 
-It exposes the WSGI callable as a module-level variable named ``application``.
+部署时，WSGI 服务器（如 Gunicorn、uWSGI）加载的就是本模块
+名为 ``application`` 的可调用对象。
 
-For more information on this file, see
-https://docs.djangoproject.com/en/6.0/howto/deployment/wsgi/
+详细说明见：
+https://docs.djangoproject.com/zh-hans/6.0/howto/deployment/wsgi/
 """
 
 import os
