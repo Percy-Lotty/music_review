@@ -7,7 +7,7 @@
         <div style="border-bottom: 1px solid #ddd; padding: 16px 0;">
             <h3><a href="{% url 'album_detail' album.id %}">{{ album.title }}</a></h3>
             <p><strong>艺人：</strong>{{ album.artist }}</p>
-            {% if album.critic_score %}
+            {% if album.critic_score is not None %}
                 <p><strong>评分：</strong>{{ album.critic_score }}/100</p>
             {% endif %}
             {% if album.critic_published_at %}
