@@ -1,23 +1,29 @@
+{% extends 'reviews/base.html' %}
+
+{% block title %}{{ critic_name }} 的乐评 - {{ block.super }}{% endblock %}
+
+{% block content %}
 <h1>{{ critic_name }} 撰写的乐评</h1>
 
 <p><a href="{% url 'home' %}">← 返回首页</a></p>
 
-<div style="margin-top: 20px;">
+<div class="review-list">
     {% for album in albums %}
-        <div style="border-bottom: 1px solid #ddd; padding: 16px 0;">
+        <div class="review-item">
             <h3><a href="{% url 'album_detail' album.id %}">{{ album.title }}</a></h3>
             <p><strong>艺人：</strong>{{ album.artist }}</p>
             {% if album.critic_score is not None %}
                 <p><strong>评分：</strong>{{ album.critic_score }}/100</p>
             {% endif %}
             {% if album.critic_published_at %}
-                <p style="color: #888; font-size: 14px;">发布时间：{{ album.critic_published_at|date:"Y-m-d" }}</p>
+                <p class="meta">发布时间：{{ album.critic_published_at|date:"Y-m-d" }}</p>
             {% endif %}
             {% if album.critic_review %}
-                <div style="margin-top: 8px; color: #555;">{{ album.critic_review|truncatewords:50|linebreaks }}</div>
+                <div class="review-text">{{ album.critic_review|truncatewords:2|linebreaks }}</div>
             {% endif %}
         </div>
     {% empty %}
         <p>该乐评人暂无乐评记录。</p>
     {% endfor %}
 </div>
+{% endblock %}
