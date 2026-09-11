@@ -46,14 +46,19 @@ pip install -r requirements.txt
 # 4. 初始化数据库
 python manage.py migrate
 
-# 5. 创建后台管理员
+# 5. 导入示例数据（可选，13 张专辑与用户评分）
+python manage.py loaddata seed_data
+
+# 6. 创建后台管理员
 python manage.py createsuperuser
 
-# 6. 启动开发服务器
+# 7. 启动开发服务器
 python manage.py runserver
 ```
 
 打开 http://127.0.0.1:8000/ 查看首页，http://127.0.0.1:8000/admin/ 进入后台录入数据。
+
+示例数据存放在 `reviews/fixtures/seed_data.json`，执行第 5 步即可把专辑、乐评与用户评分一次性导入任意一台机器的空数据库。导入前需先完成 `migrate`；重复执行会按主键覆盖，不会产生重复记录。
 
 ## 📁 项目结构
 
@@ -76,6 +81,8 @@ music_review/
     ├── urls.py                 # 应用路由
     ├── admin.py                # 后台定制
     ├── migrations/             # 数据库迁移记录
+    ├── fixtures/
+    │   └── seed_data.json      # 示例数据（loaddata 导入）
     └── templates/reviews/      # 模板
 ```
 
