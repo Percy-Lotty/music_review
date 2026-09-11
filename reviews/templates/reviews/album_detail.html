@@ -9,7 +9,7 @@
     <img src="{{ album.cover_url }}" alt="{{ album.title }}" class="detail-cover">
 {% endif %}
 
-<p><strong>艺人：</strong><a href="{% url 'artist_albums' album.artist %}">{{ album.artist }}</a></p>
+<p><strong>艺人：</strong><a href="{% url 'reviews:artist_albums' album.artist %}">{{ album.artist }}</a></p>
 <p><strong>发行日期：</strong>{{ album.release_date|date:"Y-m-d" }}</p>
 
 {% if album.genre %}
@@ -27,7 +27,7 @@
     <div class="critic-box">
         <h2>乐评人评分：{{ album.critic_score }}/100</h2>
         {% if album.critic_name %}
-            <p><strong>乐评人：</strong><a href="{% url 'critic_albums' album.critic_name %}">{{ album.critic_name }}</a></p>
+            <p><strong>乐评人：</strong><a href="{% url 'reviews:critic_albums' album.critic_name %}">{{ album.critic_name }}</a></p>
         {% endif %}
         {% if album.critic_published_at %}
             <p><strong>发布时间：</strong>{{ album.critic_published_at|date:"Y-m-d" }}</p>
@@ -54,5 +54,5 @@
     <p>暂无用户评分，来做第一个打分的人吧！</p>
 {% endfor %}
 
-<p><a href="{% url 'home' %}">← 返回列表</a></p>
+<p><a href="{% url 'reviews:home' %}">← 返回列表</a></p>
 {% endblock %}

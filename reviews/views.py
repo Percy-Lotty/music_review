@@ -1,35 +1,42 @@
 from django.db.models import Avg, Q
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import render
+from django.views import generic
 
 from .models import Album
 
 
-def home(request):
-    query = request.GET.get("q", "").strip()
-    albums = Album.objects.all()
+class AlbumListView(generic.ListView):
+    model = Album
+    template_name = "reviews/home.html"
+    context_object_name = "albums"
+    paginate_by = 12
 
-    if query:
-        # 用 Q 组合成 OR；写成两个关键字参数会变成 AND，等于要求标题和艺人同时命中
-        albums = albums.filter(Q(title__icontains=query) | Q(artist__icontains=query))
+    def get_queryset(self):
+        query = self.request.GET.get("q", "").strip()
+        if query:
+            albums = Album.objects.filter(
+                Q(title__icontains=query) | Q(artist__icontains=query)
+            )
+        else:
+            albums = Album.objects.all()
+        return albums.order_by("-release_date")
 
-    return render(request, "reviews/home.html", {"albums": albums, "query": query})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["query"] = self.request.GET.get("q", "").strip()
+        return context
 
 
-def album_detail(request, album_id):
-    album = get_object_or_404(Album, id=album_id)
+class AlbumDetailView(generic.DetailView):
+    model = Album
+    template_name = "reviews/album_detail.html"
+    pk_url_kwarg = "album_id"
 
-    user_ratings = album.ratings.all()
-    avg_score = user_ratings.aggregate(Avg("score"))["score__avg"]
-
-    # 一条评分都没有时 aggregate 返回 None，不能直接丢给 round
-    if avg_score is not None:
-        avg_score = round(avg_score, 1)
-
-    return render(
-        request,
-        "reviews/album_detail.html",
-        {"album": album, "avg_score": avg_score},
-    )
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        avg_score = self.object.ratings.all().aggregate(Avg("score"))["score__avg"]
+        context["avg_score"] = round(avg_score, 1) if avg_score is not None else None
+        return context
 
 
 def artist_albums(request, artist_name):

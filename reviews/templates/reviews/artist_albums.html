@@ -5,12 +5,12 @@
 {% block content %}
 <h1>{{ artist_name }} 的专辑</h1>
 
-<p><a href="{% url 'home' %}">← 返回首页</a></p>
+<p><a href="{% url 'reviews:home' %}">← 返回首页</a></p>
 
 <div class="album-grid">
     {% for album in albums %}
         <div class="album-card">
-            <a href="{% url 'album_detail' album.id %}">
+            <a href="{% url 'reviews:album_detail' album.id %}">
                 {% if album.cover_url %}
                     <img src="{{ album.cover_url }}" alt="{{ album.title }}">
                 {% else %}
@@ -19,7 +19,7 @@
                     </div>
                 {% endif %}
             </a>
-            <p><a href="{% url 'album_detail' album.id %}"><strong>{{ album.title }}</strong></a></p>
+            <p><a href="{% url 'reviews:album_detail' album.id %}"><strong>{{ album.title }}</strong></a></p>
             <p class="muted">{{ album.release_date|date:"Y" }}</p>
             {% if album.critic_score is not None %}
                 <p class="score">乐评人评分：{{ album.critic_score }}/100</p>
