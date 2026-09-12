@@ -41,11 +41,11 @@
 <h2>用户评分</h2>
 
 {% if avg_score is not None %}
-    <p><strong>用户平均分：{{ avg_score }}/10</strong>（共 {{ album.ratings.count }} 人评分）</p>
+    <p><strong>用户平均分：{{ avg_score }}/10</strong>（共{{ ratings|length }}条评分）</p>
 {% endif %}
 
 {# 普通用户评分列表 #}
-{% for rating in album.ratings.all %}
+{% for rating in ratings %}
     <div class="rating-item">
         <p><strong>{{ rating.reviewer_name }}</strong> 评分：{{ rating.score }}/10</p>
         <p class="meta">{{ rating.created_at|date:"Y-m-d H:i" }}</p>

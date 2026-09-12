@@ -34,7 +34,9 @@ class AlbumDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        avg_score = self.object.ratings.all().aggregate(Avg("score"))["score__avg"]
+        ratings = self.object.ratings.all()
+        avg_score = ratings.aggregate(Avg("score"))["score__avg"]
+        context["ratings"] = ratings
         context["avg_score"] = round(avg_score, 1) if avg_score is not None else None
         return context
 
