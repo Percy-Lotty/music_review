@@ -114,20 +114,38 @@ music_review/
 
 ## 🧹 代码规范
 
-项目使用 black 统一格式、ruff 做静态检查，提交前应保证两者均无输出：
+项目用 black 统一格式、ruff 做静态检查，两者安装在 `requirements-dev.txt`。它们职责不同，**不能互相替代**：black 只负责排版（缩进、引号、折行），ruff 负责发现问题（未使用的导入、导入排序、未定义名称等）。
+
+每次写完代码，提交前依次执行：
 
 ```bash
-python -m black .
-python -m ruff check .
+# 1. 静态检查（可自动修复的问题顺手修掉）
+ruff check . --fix
+
+# 2. 统一格式
+black .
+
+# 3. Django 自身的配置检查
 python manage.py check
+
+# 4. 跑测试（改动了逻辑时必跑）
+python manage.py test
 ```
+
+第 4 条只在改动逻辑时需要；前三条每次提交都应跑。四条都没有输出或报错，再 `git add` / `git commit`。嫌麻烦时可以记成一行：
+
+```bash
+ruff check . --fix && black .
+```
+
+配置固定在 `pyproject.toml`：black 与 ruff 的 `line-length` 都是 88，`migrations/` 目录两边统一排除（迁移文件由 Django 生成，不手工调整格式）。
 
 ## 🗺 后续计划
 
 - [ ] 用户系统：注册 / 登录 / 登出，评分与账号关联
 - [ ] 一人一专辑仅可评分一次（`UniqueConstraint`）
 - [ ] 个人中心：查看本人全部评分记录
-- [ ] 函数视图改写为类视图（CBV）+ 列表分页
+- [x] 函数视图改写为类视图（CBV）+ 列表分页
 - [ ] 补充自动化测试
 - [ ] ORM 查询优化（`select_related` / `annotate` 消除 N+1）
 - [ ] Django REST Framework 提供 API

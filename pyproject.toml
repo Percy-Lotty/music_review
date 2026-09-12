@@ -1,3 +1,18 @@
 # d:\CodexWorkspace\projects\music_review\pyproject.toml
+
+[tool.black]
+line-length = 88
+# Django 自动生成的迁移文件交给框架自己管，避免 black 重排后产生无意义 diff
+extend-exclude = '/migrations/'
+
 [tool.ruff]
+line-length = 88
 exclude = ["**/migrations"]
+
+[tool.ruff.lint]
+# 固定规则集，避免 ruff 升级后默认规则变动导致行为漂移：
+#   E4 / E7 / E9 —— 导入位置、语句级写法、运行时错误
+#   F            —— pyflakes：未使用导入、未定义名称等
+#   I            —— isort：导入分组与排序（black 不管这件事）
+# 刻意不启用 E501（行过长）：black 无法拆分长字符串与 URL，硬开会让两者互相打架
+select = ["E4", "E7", "E9", "F", "I"]
