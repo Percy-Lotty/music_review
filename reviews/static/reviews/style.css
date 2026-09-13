@@ -40,3 +40,14 @@
 .pagination { margin-top: 24px; display: flex; align-items: center; gap: 12px; color: #666; }
 .pagination a { color: #c60; text-decoration: none; }
 .pagination a:hover { text-decoration: underline; }
+
+/* ===== 用户导航区 ===== */
+.user-nav { display: inline-flex; align-items: center; gap: 12px; margin-left: 16px; }
+.user-nav a { color: #c60; text-decoration: none; }
+.user-nav a:hover { text-decoration: underline; }
+.logout-form { display: inline; }
+.logout-form button {
+    padding: 4px 10px; border: 1px solid #ccc; border-radius: 4px;
+    background: #f5f5f5; cursor: pointer;
+}
+.login-form input[type="text"], .login-form input[type="password"] { padding: 6px 10px; }

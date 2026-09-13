@@ -112,3 +112,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/zh-hans/6.0/howto/static-files/
 
 STATIC_URL = "static/"
+
+
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "reviews:home"
+LOGOUT_REDIRECT_URL = "reviews:home"
