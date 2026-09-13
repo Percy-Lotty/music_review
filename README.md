@@ -138,7 +138,7 @@ python manage.py test
 ruff check . --fix && black .
 ```
 
-配置固定在 `pyproject.toml`：black 与 ruff 的 `line-length` 都是 88，`migrations/` 目录两边统一排除（迁移文件由 Django 生成，不手工调整格式）。
+配置固定在 `pyproject.toml`：black 与 ruff 的 `line-length` 都是 88，`migrations/` 目录两边统一排除（迁移文件由 Django 生成，不手工调整格式）。完整清单（含 admin 数据变更、新机器恢复数据）见 [docs/提交前检查清单.md](docs/提交前检查清单.md)。
 
 ## 🗺 后续计划
 
