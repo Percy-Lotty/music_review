@@ -44,6 +44,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # 练手：请求阶段最后进入（最贴近视图），响应阶段最先返回
+    "reviews.middleware.timing_middleware",
 ]
 
 ROOT_URLCONF = "music_review.urls"
