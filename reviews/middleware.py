@@ -10,12 +10,10 @@ import time
 
 
 def timing_middleware(get_response):
-    # 这里的代码只在启动时执行一次；get_response 代表"下一层"，最终通向视图
-
     def middleware(request):
         start = time.perf_counter()
 
-        response = get_response(request)  # ← 调用下一层（最终是视图）
+        response = get_response(request)
 
         cost = (time.perf_counter() - start) * 1000
         response["X-Response-Time-ms"] = f"{cost:.1f}"
