@@ -2,7 +2,7 @@
 
 一个用 Django 从零搭建的专辑乐评网站：收录专辑信息、展示专业乐评人评分与长评、并支持普通用户打分。
 
-> 这是我系统学习 Django 的实践项目，跟随官方教程 Part 1–7 逐步构建，并在此基础上扩展了搜索、多维度筛选、封面自动抓取和后台定制等功能。
+> 这是我系统学习 Django 的实践项目，跟随官方教程 Part 1–7 逐步构建，并在此基础上扩展了搜索、多维度筛选、封面自动抓取、后台定制和用户系统等功能。
 
 ---
 
@@ -15,6 +15,11 @@
 - **按乐评人筛选**：点击乐评人姓名查看其撰写的全部乐评
 - **封面自动抓取**：调用 iTunes Search API 按「艺人 + 专辑名」检索并保存 1000×1000 高清封面，无需申请密钥
 - **后台管理**：自定义列表字段、封面缩略图预览、评分区间过滤器、字段分组、保存时自动补全乐评人
+- **注册 / 登录 / 登出**：基于 `django.contrib.auth`，注册用 `CreateView` + `UserCreationForm`，注册完跳登录页
+- **登录评分，一人一评**：只有登录用户能打分（未登录点「我要评分」先跳登录、登录后自动回到评分页）；同一账号对同一专辑仅一条评分——重复提交自动变为修改，由数据库 `UniqueConstraint` 与视图层判断双保险
+- **个人中心 `/my/`**：`LoginRequiredMixin` 保护，列出本人打过的全部分并附时间
+- **计时中间件**：自写中间件在响应头输出 `X-Response-Time-ms`，方便观察每页耗时
+- **自动化测试**：19 条覆盖模型、视图、认证与评分流程，`python manage.py test` 一键回归
 
 ## 🛠 技术栈
 
@@ -77,13 +82,16 @@ music_review/
 │   └── wsgi.py
 └── reviews/                    # 核心应用
     ├── models.py               # Album / UserRating
-    ├── views.py                # 4 个视图
+    ├── views.py                # 列表 / 详情 / 注册 / 评分 / 个人中心
+    ├── forms.py                # 评分表单
     ├── urls.py                 # 应用路由
     ├── admin.py                # 后台定制
+    ├── middleware.py           # 计时中间件（X-Response-Time-ms）
+    ├── tests.py                # 自动化测试（19 条）
     ├── migrations/             # 数据库迁移记录
     ├── fixtures/
     │   └── seed_data.json      # 示例数据（loaddata 导入）
-    └── templates/reviews/      # 模板
+    └── templates/              # 模板（reviews + registration）
 ```
 
 ## 🗂 数据模型
@@ -106,11 +114,14 @@ music_review/
 | 字段 | 类型 | 说明 |
 |---|---|---|
 | `album` | ForeignKey → Album | 级联删除，反向名 `ratings` |
+| `user` | ForeignKey → User | 可空；登录用户的评分，老匿名数据该列为 NULL，反向名 `ratings` |
 | `score` | IntegerField | 用户评分 0–10 |
 | `reviewer_name` | CharField | 评分者昵称，可为空 |
 | `created_at` | DateTimeField | 自动记录创建时间 |
 
 > 设计说明：乐评字段内联在 `Album` 上而非独立建表——一张专辑最多对应一份专业乐评，拆表只会多一次连表查询。
+>
+> 一人一专辑仅一条评分由数据库约束 `UniqueConstraint(album, user)` 兜底；`user` 为 NULL 的匿名评分互不算重复，老数据不受影响。
 
 ## 🧹 代码规范
 
@@ -142,11 +153,11 @@ ruff check . --fix && black .
 
 ## 🗺 后续计划
 
-- [ ] 用户系统：注册 / 登录 / 登出，评分与账号关联
-- [ ] 一人一专辑仅可评分一次（`UniqueConstraint`）
-- [ ] 个人中心：查看本人全部评分记录
+- [x] 用户系统：注册 / 登录 / 登出，评分与账号关联
+- [x] 一人一专辑仅可评分一次（`UniqueConstraint`）
+- [x] 个人中心：查看本人全部评分记录
 - [x] 函数视图改写为类视图（CBV）+ 列表分页
-- [ ] 补充自动化测试
+- [x] 补充自动化测试
 - [ ] ORM 查询优化（`select_related` / `annotate` 消除 N+1）
 - [ ] Django REST Framework 提供 API
 - [ ] 部署上线（Nginx + Gunicorn）
