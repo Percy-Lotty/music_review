@@ -40,6 +40,16 @@
 
 <h2>用户评分</h2>
 
+{% if user.is_authenticated %}
+    {% if my_rating %}
+        <p><a href="{% url 'reviews:add_rating' album.id %}">✏️ 修改我的评分（当前 {{ my_rating.score }}/10）</a></p>
+    {% else %}
+        <p><a href="{% url 'reviews:add_rating' album.id %}">我要评分</a></p>
+    {% endif %}
+{% else %}
+    <p><a href="{% url 'reviews:add_rating' album.id %}">我要评分</a>（未登录会先跳转登录页）</p>
+{% endif %}
+
 {% if avg_score is not None %}
     <p><strong>用户平均分：{{ avg_score }}/10</strong>（共{{ ratings|length }}条评分）</p>
 {% endif %}
@@ -47,7 +57,7 @@
 {# 普通用户评分列表 #}
 {% for rating in ratings %}
     <div class="rating-item">
-        <p><strong>{{ rating.reviewer_name }}</strong> 评分：{{ rating.score }}/10</p>
+        <p><strong>{{ rating.display_name }}</strong> 评分：{{ rating.score }}/10</p>
         <p class="meta">{{ rating.created_at|date:"Y-m-d H:i" }}</p>
     </div>
 {% empty %}

@@ -1,8 +1,10 @@
+from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Q
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views import generic
 
-from .models import Album
+from .forms import RatingForm
+from .models import Album, UserRating
 
 
 class AlbumListView(generic.ListView):
@@ -38,6 +40,10 @@ class AlbumDetailView(generic.DetailView):
         avg_score = ratings.aggregate(Avg("score"))["score__avg"]
         context["ratings"] = ratings
         context["avg_score"] = round(avg_score, 1) if avg_score is not None else None
+        if self.request.user.is_authenticated:
+            context["my_rating"] = self.object.ratings.filter(
+                user=self.request.user
+            ).first()
         return context
 
 
@@ -62,3 +68,23 @@ def critic_albums(request, critic_name):
         "reviews/critic_albums.html",
         {"albums": albums, "critic_name": critic_name},
     )
+
+
+@login_required
+def add_rating(request, album_id):
+    album = get_object_or_404(Album, id=album_id)
+    # 已评过就把旧评分绑给表单：再次提交变成修改，而不是触发唯一约束 500
+    existing = UserRating.objects.filter(album=album, user=request.user).first()
+
+    if request.method == "POST":
+        form = RatingForm(request.POST, instance=existing)
+        if form.is_valid():
+            rating = form.save(commit=False)  # 先不入库
+            rating.album = album  # 补上表单里没有的字段
+            rating.user = request.user
+            rating.save()
+            return redirect("reviews:album_detail", album_id=album.id)  # PRG！
+    else:
+        form = RatingForm(instance=existing)
+
+    return render(request, "reviews/add_rating.html", {"form": form, "album": album})

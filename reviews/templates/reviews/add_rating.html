@@ -1,0 +1,16 @@
+{% extends 'reviews/base.html' %}
+
+{% block title %}为《{{ album.title }}》评分 - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h1>为《{{ album.title }}》评分</h1>
+<p>艺人：{{ album.artist }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">提交评分</button>
+</form>
+
+<p><a href="{% url 'reviews:album_detail' album.id %}">← 返回专辑详情</a></p>
+{% endblock %}
