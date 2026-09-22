@@ -1,0 +1,25 @@
+{% extends 'reviews/base.html' %}
+
+{% block title %}个人中心 - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h1>个人中心</h1>
+
+{% if ratings %}
+    <p>你一共评过 {{ ratings|length }} 张专辑：</p>
+
+    {% for rating in ratings %}
+        <div class="rating-item">
+            <p>
+                <a href="{% url 'reviews:album_detail' rating.album.id %}">{{ rating.album.title }}</a>
+                —— {{ rating.score }}/10
+            </p>
+            <p class="meta">{{ rating.created_at|date:"Y-m-d H:i" }}</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>你还没有评过分，去<a href="{% url 'reviews:home' %}">首页</a>找一张专辑试试。</p>
+{% endif %}
+
+<p><a href="{% url 'reviews:home' %}">← 返回列表</a></p>
+{% endblock %}

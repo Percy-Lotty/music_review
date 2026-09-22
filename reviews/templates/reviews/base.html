@@ -10,14 +10,17 @@
     <header>
         🎵 Percy's
         <nav class="user-nav">
+            {% url 'login' as login_url %}
             {% if user.is_authenticated %}
                 <span>欢迎，{{ user.username }}</span>
+                <a href="{% url 'reviews:my_ratings' %}">个人中心</a>
                 <form method="post" action="{% url 'logout' %}" class="logout-form">
                     {% csrf_token %}
                     <button type="submit">登出</button>
                 </form>
-            {% else %}
-                <a href="{% url 'login' %}">登录</a>
+            {% elif request.path != login_url %}
+                {# 登录页本身不再显示登录入口；next 带上当前地址，登录后回到原页 #}
+                <a href="{{ login_url }}?next={{ request.get_full_path|urlencode }}">登录</a>
             {% endif %}
         </nav>
     </header>

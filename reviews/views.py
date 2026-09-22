@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Avg, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -96,3 +97,12 @@ def add_rating(request, album_id):
         form = RatingForm(instance=existing)
 
     return render(request, "reviews/add_rating.html", {"form": form, "album": album})
+
+
+class MyRatingsView(LoginRequiredMixin, generic.ListView):
+    model = UserRating
+    template_name = "reviews/my_ratings.html"
+    context_object_name = "ratings"
+
+    def get_queryset(self):
+        return self.request.user.ratings.order_by("-created_at")
