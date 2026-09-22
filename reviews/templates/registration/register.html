@@ -1,0 +1,12 @@
+{% extends "reviews/base.html" %}
+
+{% block title %}注册 - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h2>注册</h2>
+<form method="post" class="login-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">注册</button>
+</form>
+{% endblock %}

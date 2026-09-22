@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Avg, Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
 from django.views import generic
 
 from .forms import RatingForm
@@ -68,6 +70,12 @@ def critic_albums(request, critic_name):
         "reviews/critic_albums.html",
         {"albums": albums, "critic_name": critic_name},
     )
+
+
+class RegisterView(generic.CreateView):
+    form_class = UserCreationForm
+    template_name = "registration/register.html"
+    success_url = reverse_lazy("login")
 
 
 @login_required

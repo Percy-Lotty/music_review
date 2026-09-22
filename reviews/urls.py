@@ -9,4 +9,5 @@ urlpatterns = [
     path("album/<int:album_id>/rate/", views.add_rating, name="add_rating"),
     path("artist/<str:artist_name>/", views.artist_albums, name="artist_albums"),
     path("critic/<str:critic_name>/", views.critic_albums, name="critic_albums"),
+    path("register/", views.RegisterView.as_view(), name="register"),
 ]
