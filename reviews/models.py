@@ -1,4 +1,5 @@
 import requests
+from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -60,12 +61,32 @@ class Album(models.Model):
 
 class UserRating(models.Model):
     album = models.ForeignKey(Album, on_delete=models.CASCADE, related_name="ratings")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="ratings",
+        null=True,
+        blank=True,
+    )
     score = models.IntegerField(
         validators=[MinValueValidator(0), MaxValueValidator(10)]
     )
     reviewer_name = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["album", "user"],
+                name="unique_user_album_rating",
+            )
+        ]
+
+    @property
+    def display_name(self):
+        if self.user:
+            return self.user.username
+        return self.reviewer_name or "匿名用户"
+
     def __str__(self):
-        name = self.reviewer_name or "匿名用户"
-        return f"{name} - {self.album.title} - {self.score}分"
+        return f"{self.display_name} - {self.album.title} - {self.score}分"
