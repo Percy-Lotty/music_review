@@ -1,3 +1,4 @@
 # 开发工具（不参与线上运行）：pip install -r requirements-dev.txt
 black==26.5.1
+django-debug-toolbar==8.0.0
 ruff==0.16.5

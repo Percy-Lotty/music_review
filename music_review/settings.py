@@ -48,6 +48,15 @@ MIDDLEWARE = [
     "reviews.middleware.timing_middleware",
 ]
 
+# 开发期观测面板：SQL 条数/耗时、模板渲染、请求头等，只在 DEBUG 下启用
+if DEBUG:
+    # 官方建议放 INSTALLED_APPS 最前，至少要排在 staticfiles 之前
+    INSTALLED_APPS.insert(0, "debug_toolbar")
+    # 放在 SecurityMiddleware 之后，保证面板拿到的响应未被后续中间件改写
+    MIDDLEWARE.insert(1, "debug_toolbar.middleware.DebugToolbarMiddleware")
+    # 只对本机发起的请求显示面板
+    INTERNAL_IPS = ["127.0.0.1"]
+
 ROOT_URLCONF = "music_review.urls"
 
 TEMPLATES = [
